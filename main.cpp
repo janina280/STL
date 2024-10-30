@@ -1,7 +1,6 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <algorithm>
 #include <fstream>
 
 using namespace std;
@@ -18,40 +17,39 @@ struct Doctor {
 
 Problem currentProblem;
 
-bool isSpecialist(const Doctor& doc) {
-    return doc.specialty == currentProblem.specialty;
-}
-
 int main() {
     ifstream inFile("input.txt");
 
-    int numProblems, numDoctors;
-    inFile >> numProblems;
+    int no_Problems, no_Doctors;
+    inFile >> no_Problems;
 
-    vector<Problem> problems(numProblems);
-    for (Problem& c : problems) {
-        inFile >> c.name >> c.specialty;
+    vector<Problem> problems(no_Problems);
+    for (Problem& p : problems) {
+        inFile >> p.name >> p.specialty;
     }
 
-    inFile >> numDoctors;
-    vector<Doctor> doctors(numDoctors);
+    inFile >> no_Doctors;
+    vector<Doctor> doctors(no_Doctors);
     for (Doctor& d : doctors) {
         inFile >> d.id >> d.specialty;
     }
 
     for (const Problem& p : problems) {
         currentProblem = p;
-        auto docIt = find_if(doctors.begin(), doctors.end(), isSpecialist);
+        bool found = false;
 
-        if (docIt != doctors.end()) {
-            cout << p.name << " " << "Acceptat" <<endl;
-            doctors.erase(docIt);
+        for (size_t i = 0; i < doctors.size(); ++i) {
+            if (doctors[i].specialty == currentProblem.specialty) {
+                cout << p.name << " " << "Acceptat" << endl;
+                doctors.erase(doctors.begin() + i);
+                found = true;
+                break;
+            }
         }
-        else
-        {
+
+        if (!found) {
             cout << p.name << " " << "Respins" << endl;
         }
-        
     }
 
     inFile.close();
