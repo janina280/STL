@@ -16,7 +16,7 @@ struct Doctor {
 	string specialty;
 };
 
-int main() {
+int main_excluded() {
 	ifstream inFile("input2.txt");
 
 	int no_Problems, no_Doctors;
