@@ -20,7 +20,7 @@ struct Doctor {
 };
 
 int main() {
-    ifstream inFile("input.txt");
+    ifstream inFile("input2.txt");
 
     int no_Problems, no_Doctors;
     inFile >> no_Problems;
