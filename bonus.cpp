@@ -20,13 +20,13 @@ struct Doctor {
 };
 
 int main() {
-    ifstream inFile("input.txt");
+    ifstream inFile("input2.txt");
 
     int no_Problems, no_Doctors;
     inFile >> no_Problems;
     vector<Problem> problems(no_Problems);
     for (Problem& problem : problems) {
-        inFile >> problem.name >> problem.specialty >> problem.severity >> problem.duration;
+        inFile >> problem.name >> problem.specialty >> problem.duration>> problem.severity;
     }
     inFile >> no_Doctors;
 
