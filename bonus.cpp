@@ -2,75 +2,62 @@
 #include <vector>
 #include <string>
 #include <algorithm>
-#include <chrono>
 #include <fstream>
 
 using namespace std;
 
 struct Problem {
-	string name;
-	string specialty;
-	int duration;
+    string name;
+    string specialty;
+    int severity;
+    int duration;
 };
 
 struct Doctor {
-	string id;
-	string specialty;
+    string id;
+    string specialty;
+    int available_time = 0;
 };
 
 int main() {
-	ifstream inFile("input4_bonus.txt");
-	int count = 0;
-	int hours = 8;
-	int no_Problems, no_Doctors;
-	inFile >> no_Problems;
+    ifstream inFile("input.txt");
 
-	vector<Problem> problems(no_Problems);
-	for (Problem& problem : problems) {
-		inFile >> problem.name >> problem.specialty >> problem.duration;
-	}
+    int no_Problems, no_Doctors;
+    inFile >> no_Problems;
+    vector<Problem> problems(no_Problems);
+    for (Problem& problem : problems) {
+        inFile >> problem.name >> problem.specialty >> problem.severity >> problem.duration;
+    }
+    inFile >> no_Doctors;
 
-	inFile >> no_Doctors;
-	vector<Doctor> doctors(no_Doctors);
-	for (Doctor& doctor : doctors) {
-		inFile >> doctor.id >> doctor.specialty;
-	}
+    vector<Doctor> doctors(no_Doctors);
+    for (Doctor& doctor : doctors) {
+        inFile >> doctor.id >> doctor.specialty;
+    }
+    sort(problems.begin(), problems.end(), [](const Problem& a, const Problem& b) {
+        return a.severity > b.severity;
+        });
+    vector<vector<string>> assignments(doctors.size()); 
+    for (const auto& problem : problems) {
+        auto doctor_it = find_if(doctors.begin(), doctors.end(), [&](Doctor& doctor) {
+            return doctor.specialty == problem.specialty && doctor.available_time + problem.duration <= 8;
+            });
 
-	for (const Doctor& doctor : doctors)
-	{
-		vector<string>problem_find;
-		hours = 8;
-		count = 0;
+        if (doctor_it != doctors.end()) {
+            doctor_it->available_time += problem.duration;
+            int doctor_index = doctor_it - doctors.begin();
+            assignments[doctor_index].push_back(problem.name);
+        }
+    }
 
-		auto problem_it = find_if(
-			problems.begin(),
-			problems.end(),
-			[&](const Problem& problem) {
-				return doctor.specialty == problem.specialty && hours - problem.duration >= 0;
-			});
-		while (problem_it != problems.end())
-		{
-			count++;
-			hours = hours - problem_it->duration;
-			problem_find.push_back(problem_it->name);
-			problems.erase(problem_it);
+    for (size_t i = 0; i < doctors.size(); ++i) {
+        cout << doctors[i].id << " " << assignments[i].size() << " ";
+        for (const auto& problem_name : assignments[i]) {
+            cout << problem_name << " ";
+        }
+        cout << '\n';
+    }
 
-			problem_it = find_if(
-				problems.begin(),
-				problems.end(),
-				[&](const Problem& problem) {
-					return doctor.specialty == problem.specialty && hours - problem.duration >= 0;
-				});
-		}
-		cout << doctor.id << " " << count << " ";
-		for (auto problem : problem_find)
-		{
-			cout << problem << " ";
-		}
-		cout << '\n';
-
-	}
-	inFile.close();
-
-	return 0;
+    inFile.close();
+    return 0;
 }
