@@ -23,16 +23,16 @@ int main() {
     ifstream inFile("input2.txt");
 
     int no_Problems, no_Doctors;
-    cin >> no_Problems;
+    inFile >> no_Problems;
     vector<Problem> problems(no_Problems);
     for (Problem& problem : problems) {
-        cin >> problem.name >> problem.specialty >> problem.duration>> problem.severity;
+        inFile >> problem.name >> problem.specialty >> problem.duration>> problem.severity;
     }
-    cin >> no_Doctors;
+    inFile >> no_Doctors;
 
     vector<Doctor> doctors(no_Doctors);
     for (Doctor& doctor : doctors) {
-        cin >> doctor.id >> doctor.specialty;
+        inFile >> doctor.id >> doctor.specialty;
     }
     sort(problems.begin(), problems.end(), [](const Problem& a, const Problem& b) {
         return a.severity > b.severity;
